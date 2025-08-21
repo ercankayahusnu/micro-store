@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type Product = {
-  id: number; // bu id artık json-server’ın verdiği id olacak
+  id: number;
   title: string;
   price: number;
   image: string;
@@ -12,16 +13,12 @@ type Product = {
 export default function CartPage() {
   const [cart, setCart] = useState<Product[]>([]);
 
-  // Sayfa açıldığında sepeti getir
+  // API'den sepeti oku
   useEffect(() => {
     const fetchCart = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/cart");
-        const data = await res.json();
-        setCart(data);
-      } catch (err) {
-        console.error("Sepet alınamadı:", err);
-      }
+      const res = await fetch("http://localhost:4000/cart");
+      const data = await res.json();
+      setCart(data);
     };
     fetchCart();
   }, []);
@@ -35,12 +32,15 @@ export default function CartPage() {
 
       if (!res.ok) throw new Error("Silme başarısız!");
 
-      // API’den güncel sepeti tekrar çek
+      // API'den güncel sepeti tekrar çek
       const updated = await fetch("http://localhost:4000/cart");
       const data = await updated.json();
       setCart(data);
+
+      toast.success("Ürün sepetten silindi 🗑️");
     } catch (err) {
       console.error("Ürün silinirken hata:", err);
+      toast.error("Ürün silinirken hata oluştu ❌");
     }
   };
 

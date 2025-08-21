@@ -1,4 +1,5 @@
 import React from "react";
+import AddToCartButton from "../../../components/AddToCartButton";
 
 type Product = {
   id: number;
@@ -51,9 +52,8 @@ export default async function ProductPage({
           </p>
           <p className="text-gray-700 mb-6">{product.description}</p>
 
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
-            Add to Cart
-          </button>
+          {/* Ortak AddToCartButton kullanıldı */}
+          <AddToCartButton product={product} />
         </div>
       </div>
     </main>

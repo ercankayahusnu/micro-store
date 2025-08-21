@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import toast from "react-hot-toast";
 
 type Product = {
-  id: number; // Fakestore’dan gelen id (bunu göndermeyeceğiz!)
+  id: number;
   title: string;
   price: number;
   image: string;
@@ -12,7 +13,6 @@ type Product = {
 export default function AddToCartButton({ product }: { product: Product }) {
   const handleAddToCart = async () => {
     try {
-      // API’ye sadece gerekli alanları gönder
       const res = await fetch("http://localhost:4000/cart", {
         method: "POST",
         headers: {
@@ -27,10 +27,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
       if (!res.ok) throw new Error("Failed to add product to cart");
 
-      alert(`${product.title} sepete eklendi!`);
+      toast.success(`${product.title} sepete eklendi! ✅`);
     } catch (error) {
       console.error(error);
-      alert("Ürün sepete eklenemedi.");
+      toast.error("Ürün sepete eklenemedi ❌");
     }
   };
 
