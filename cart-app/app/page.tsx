@@ -12,6 +12,8 @@ type Product = {
 
 export default function CartPage() {
   const [cart, setCart] = useState<Product[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   // API'den sepeti oku
   useEffect(() => {
@@ -44,6 +46,21 @@ export default function CartPage() {
     }
   };
 
+  // Modal açma
+  const handleRemoveClick = (id: number) => {
+    setSelectedId(id);
+    setIsModalOpen(true);
+  };
+
+  // Modal onay
+  const confirmRemove = async () => {
+    if (selectedId) {
+      await removeFromCart(selectedId);
+      setSelectedId(null);
+      setIsModalOpen(false);
+    }
+  };
+
   // Toplam fiyat
   const totalPrice = cart.reduce((acc, item) => acc + item.price, 0);
 
@@ -72,7 +89,7 @@ export default function CartPage() {
                 </div>
               </div>
               <button
-                onClick={() => removeFromCart(product.id)}
+                onClick={() => handleRemoveClick(product.id)}
                 className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
               >
                 Remove
@@ -83,6 +100,32 @@ export default function CartPage() {
           {/* Toplam fiyat */}
           <div className="text-right font-bold text-lg mt-6">
             Toplam: ${totalPrice.toFixed(2)}
+          </div>
+        </div>
+      )}
+
+      {/* 🔹 Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full">
+            <h2 className="text-lg font-bold mb-2 text-black">Ürünü sil</h2>
+            <p className="text-gray-600 mb-6">
+              Bu ürünü sepetten silmek istediğinize emin misiniz?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+              >
+                Vazgeç
+              </button>
+              <button
+                onClick={confirmRemove}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+              >
+                Sil
+              </button>
+            </div>
           </div>
         </div>
       )}
