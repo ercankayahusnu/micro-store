@@ -3,28 +3,29 @@
 import React from "react";
 
 type Product = {
-  id: number;
+  id: number; // Fakestore’dan gelen id (bunu göndermeyeceğiz!)
   title: string;
   price: number;
   image: string;
 };
 
 export default function AddToCartButton({ product }: { product: Product }) {
-  // Sepete ürün ekleme fonksiyonu
   const handleAddToCart = async () => {
     try {
-      // API'ye POST isteği gönder
+      // API’ye sadece gerekli alanları gönder
       const res = await fetch("http://localhost:4000/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(product),
+        body: JSON.stringify({
+          title: product.title,
+          price: product.price,
+          image: product.image,
+        }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to add product to cart");
-      }
+      if (!res.ok) throw new Error("Failed to add product to cart");
 
       alert(`${product.title} sepete eklendi!`);
     } catch (error) {

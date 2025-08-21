@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 type Product = {
-  id: number;
+  id: number; // bu id artık json-server’ın verdiği id olacak
   title: string;
   price: number;
   image: string;
@@ -11,17 +11,18 @@ type Product = {
 
 export default function CartPage() {
   const [cart, setCart] = useState<Product[]>([]);
+
+  // Sayfa açıldığında sepeti getir
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const res = await fetch("http://localhost:4000/cart");
         const data = await res.json();
         setCart(data);
-      } catch (error) {
-        console.error("Sepet alınamadı:", error);
+      } catch (err) {
+        console.error("Sepet alınamadı:", err);
       }
     };
-
     fetchCart();
   }, []);
 
@@ -32,11 +33,14 @@ export default function CartPage() {
         method: "DELETE",
       });
 
-      if (!res.ok) throw new Error("Silme işlemi başarısız");
+      if (!res.ok) throw new Error("Silme başarısız!");
 
-      setCart((prev) => prev.filter((item) => item.id !== id));
-    } catch (error) {
-      console.error(error);
+      // API’den güncel sepeti tekrar çek
+      const updated = await fetch("http://localhost:4000/cart");
+      const data = await updated.json();
+      setCart(data);
+    } catch (err) {
+      console.error("Ürün silinirken hata:", err);
     }
   };
 
